@@ -2,7 +2,7 @@
     "name": "Kylin.DI.MessagePack",
     "rootNamespace": "Kylin.Serialization.MessagePack",
     "references": [
-        "Kylin.DI"
+        "Kylin.Subscribable"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
