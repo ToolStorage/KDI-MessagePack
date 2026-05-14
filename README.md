@@ -3,7 +3,7 @@
 KDI의 `SubscribableProperty`, `SubscribableCollection`, `SubscribableDictionary` 타입을 [MessagePack-CSharp](https://github.com/MessagePack-CSharp/MessagePack-CSharp)로 바이너리 직렬화할 수 있게 하는 어댑터 패키지.
 
 ```
-com.kylin.di.messagepack v1.0.0 | Unity 6000.0+ | MIT License
+com.kylin.di.messagepack | Unity 6000.0+ | MIT License
 ```
 
 ---

@@ -1,6 +1,6 @@
 {
   "name": "com.kylin.di.messagepack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "KDI MessagePack Adapter",
   "description": "MessagePack-CSharp formatters for Kylin SubscribableProperty types. Enables binary serialization of SubscribableProperty<T>, SubscribableCollection<T>, and SubscribableDictionary<TKey,TValue>.",
   "unity": "6000.0",
