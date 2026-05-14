@@ -1,0 +1,16 @@
+{
+    "name": "Kylin.DI.MessagePack",
+    "rootNamespace": "Kylin.Serialization.MessagePack",
+    "references": [
+        "Kylin.DI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
