@@ -1,0 +1,3 @@
+<linker>
+  <assembly fullname="Kylin.DI.MessagePack" preserve="all" />
+</linker>

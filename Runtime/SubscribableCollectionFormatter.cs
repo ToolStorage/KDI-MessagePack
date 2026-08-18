@@ -1,50 +1,81 @@
+using System.Collections.Generic;
 using Kylin.SubscribableProperty;
 using MessagePack;
 using MessagePack.Formatters;
+using UnityEngine.Scripting;
 
 namespace Kylin.Serialization.MessagePack
 {
-    /// <summary>
-    /// SubscribableCollection{T}용 MessagePack 포맷터.
-    /// 내부 아이템 리스트를 배열로 직렬화/역직렬화한다.
-    /// </summary>
+    [Preserve]
     public sealed class SubscribableCollectionFormatter<T> : IMessagePackFormatter<SubscribableCollection<T>>
     {
-        public void Serialize(ref MessagePackWriter writer, SubscribableCollection<T> value,
+        public static readonly SubscribableCollectionFormatter<T> Instance =
+            new SubscribableCollectionFormatter<T>();
+
+        public void Serialize(
+            ref MessagePackWriter writer,
+            SubscribableCollection<T> value,
             MessagePackSerializerOptions options)
         {
+            writer.CancellationToken.ThrowIfCancellationRequested();
             if (value == null)
             {
                 writer.WriteNil();
                 return;
             }
 
+            var settings = KDIMessagePackReaderGuard.GetSettings(options);
             var formatter = options.Resolver.GetFormatterWithVerify<T>();
             var count = value.Count;
+            KDIMessagePackReaderGuard.ValidateSerializeLength(
+                count,
+                settings.MaximumCollectionLength,
+                "SubscribableCollection");
             writer.WriteArrayHeader(count);
 
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
+                writer.CancellationToken.ThrowIfCancellationRequested();
                 formatter.Serialize(ref writer, value[i], options);
             }
         }
 
-        public SubscribableCollection<T> Deserialize(ref MessagePackReader reader,
+        public SubscribableCollection<T> Deserialize(
+            ref MessagePackReader reader,
             MessagePackSerializerOptions options)
         {
-            if (reader.TryReadNil())
-                return null;
+            reader.CancellationToken.ThrowIfCancellationRequested();
+            if (reader.TryReadNil()) return null;
 
-            var formatter = options.Resolver.GetFormatterWithVerify<T>();
-            var count = reader.ReadArrayHeader();
-            var collection = new SubscribableCollection<T>(count);
-
-            for (int i = 0; i < count; i++)
+            options.Security.DepthStep(ref reader);
+            try
             {
-                collection.Add(formatter.Deserialize(ref reader, options));
-            }
+                var formatter = options.Resolver.GetFormatterWithVerify<T>();
+                var count = reader.ReadArrayHeader();
+                var settings = KDIMessagePackReaderGuard.GetSettings(options);
+                KDIMessagePackReaderGuard.ValidateDeserializeLength(
+                    ref reader,
+                    count,
+                    settings.MaximumCollectionLength,
+                    1,
+                    "SubscribableCollection");
+                var items = new List<T>(
+                    KDIMessagePackReaderGuard.GetInitialCapacity(count, settings));
 
-            return collection;
+                for (var i = 0; i < count; i++)
+                {
+                    reader.CancellationToken.ThrowIfCancellationRequested();
+                    items.Add(formatter.Deserialize(ref reader, options));
+                }
+
+                // Bulk construction never emits notifications and does not participate in a
+                // currently active Reaction in application code.
+                return new SubscribableCollection<T>(items);
+            }
+            finally
+            {
+                reader.Depth--;
+            }
         }
     }
 }

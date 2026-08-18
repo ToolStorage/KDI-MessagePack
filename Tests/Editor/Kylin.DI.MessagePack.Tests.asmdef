@@ -1,0 +1,24 @@
+{
+    "name": "Kylin.DI.MessagePack.Tests",
+    "rootNamespace": "Kylin.Serialization.MessagePack.Tests",
+    "references": [
+        "Kylin.DI.MessagePack",
+        "Kylin.Subscribable"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false,
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}
